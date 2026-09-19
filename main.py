@@ -31,7 +31,7 @@ class Game:
         # Load previous family scores.
         self.scores = self.load_scores()
 
-        # Game starts at the driver-selection screen.
+        # Start at driver selection.
         self.state = "select"
         self.driver_name = ""
         self.name_buffer = ""
@@ -75,7 +75,7 @@ class Game:
             reverse=True
         )
 
-        # We only need to keep a sensible history.
+        # Keep up to 100 historic scores.
         self.scores = self.scores[:100]
 
         try:
@@ -91,7 +91,6 @@ class Game:
 
     def top_five_scores(self):
         """Return the five best scores."""
-
         return self.scores[:5]
 
     # --------------------------------------------------
@@ -105,10 +104,10 @@ class Game:
         self.car_x = 76
         self.car_y = 98
 
-        # Road animation.
+        # Moving road.
         self.road_offset = 0
 
-        # Traffic.
+        # Traffic car.
         self.traffic_x = self.random_traffic_position()
         self.traffic_y = -CAR_HEIGHT
 
@@ -187,7 +186,6 @@ class Game:
             if self.name_buffer:
                 self.name_buffer = self.name_buffer[:-1]
             else:
-                # Backspace on an empty name goes back.
                 self.state = "select"
 
         # Start when Enter is pressed.
@@ -244,8 +242,7 @@ class Game:
             self.traffic_y = -CAR_HEIGHT
             self.traffic_x = self.random_traffic_position()
 
-            # Dino-style difficulty:
-            # every successful dodge makes the game faster.
+            # Increase speed after each successful dodge.
             self.game_speed = min(
                 6.0,
                 2.0 + self.score * 0.20
@@ -289,7 +286,7 @@ class Game:
         )
 
     # --------------------------------------------------
-    # DRAW CARS
+    # CARS
     # --------------------------------------------------
 
     def draw_car(self, x, y, body_color):
@@ -327,7 +324,6 @@ class Game:
         # Wheels.
         pyxel.rect(x - 1, y + 2, 1, 3, BLACK)
         pyxel.rect(x + 7, y + 2, 1, 3, BLACK)
-
         pyxel.rect(x - 1, y + 8, 1, 3, BLACK)
         pyxel.rect(x + 7, y + 8, 1, 3, BLACK)
 
@@ -597,7 +593,11 @@ class Game:
             TRAFFIC_YELLOW
         )
 
-        # Left branding.
+        # -------------------------
+        # LEFT GRASS HUD
+        # -------------------------
+
+        # Costa Racing branding.
         pyxel.text(
             4,
             4,
@@ -612,7 +612,49 @@ class Game:
             WHITE
         )
 
-        # Right branding.
+        # Score block.
+        pyxel.text(
+            4,
+            35,
+            "SCORE",
+            WHITE
+        )
+
+        pyxel.text(
+            4,
+            43,
+            str(self.score),
+            WHITE
+        )
+
+        # Speed block.
+        pyxel.text(
+            4,
+            57,
+            "SPEED",
+            WHITE
+        )
+
+        pyxel.text(
+            4,
+            65,
+            f"{self.game_speed:.1f}",
+            WHITE
+        )
+
+        # Quit control.
+        pyxel.text(
+            4,
+            108,
+            "Q: QUIT",
+            WHITE
+        )
+
+        # -------------------------
+        # RIGHT GRASS HUD
+        # -------------------------
+
+        # Town Track branding.
         pyxel.text(
             134,
             4,
@@ -627,34 +669,11 @@ class Game:
             WHITE
         )
 
-        # Score.
-        pyxel.text(
-            4,
-            35,
-            f"SCORE {self.score}",
-            WHITE
-        )
-
-        # Speed.
-        pyxel.text(
-            4,
-            45,
-            f"SPD {self.game_speed:.1f}",
-            WHITE
-        )
-
-        # Driver.
+        # Current driver.
         pyxel.text(
             132,
             35,
             self.driver_name[:6].upper(),
-            WHITE
-        )
-
-        pyxel.text(
-            4,
-            108,
-            "Q: QUIT",
             WHITE
         )
 
